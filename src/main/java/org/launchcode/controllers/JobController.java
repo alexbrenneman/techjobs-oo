@@ -44,28 +44,25 @@ public class JobController {
         // TODO #6 - Validate the JobForm model, and if valid, create a
         // new Job and add it to the jobData data store. Then
         // redirect to the job detail view for the new Job.
-        if(errors.hasErrors()){
+        if (errors.hasErrors()){
+            model.addAttribute(jobForm);
             return "new-job";
+        }else {
+            String jobName = jobForm.getName();
+            Employer jobEmp = jobData.getEmployers().findById(jobForm.getEmployerId());
+            Location jobLoc = jobData.getLocations().findById(jobForm.getLocationId());
+            PositionType jobPosition = jobData.getPositionTypes().findById(jobForm.getPositionTypeId());
+            CoreCompetency jobCore = jobData.getCoreCompetencies().findById(jobForm.getCoreCompetencyId());
+
+            Job newJob = new Job(jobName, jobEmp, jobLoc, jobPosition, jobCore);
+            jobData.add(newJob);
+            String id = String.valueOf(newJob.getId());
+            System.out.println("DONE");
+
+
+            String redir = "redirect:?id=" + newJob.getId();
+            return redir;
         }
-
-        if(errors.hasErrors()){
-            return "new-job";
-        }
-
-        String jobName = jobForm.getName();
-        Employer jobEmp = jobData.getEmployers().findById(jobForm.getEmployerId());
-        Location jobLoc = jobData.getLocations().findById(jobForm.getLocationId());
-        PositionType jobPosition = jobData.getPositionTypes().findById(jobForm.getPositionTypeId());
-        CoreCompetency jobCore = jobData.getCoreCompetencies().findById(jobForm.getCoreCompetencyId());
-
-        Job newJob = new Job(jobName,jobEmp,jobLoc,jobPosition,jobCore);
-        jobData.add(newJob);
-        String id = String.valueOf(newJob.getId());
-
-
-
-        return "redirect:job?id=\"+job.getId()";
-
 
 
     }
